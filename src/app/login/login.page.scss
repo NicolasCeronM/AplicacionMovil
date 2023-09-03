@@ -1,11 +1,27 @@
-.header{
-    color: #ffffff;
-    padding: 2%;
-    height: 200px;
+.container{
     background-color: #F9A826;
 }
 
-.content{
+.header{
+    text-align: center;
+    font-weight: 700;
+    font-size: 48px;
+    color: #ffffff;
     padding: 5%;
-    background-color: bisque;
+    height: 200px;
 }
+
+.content{
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    padding: 5%;
+    background-color: #ffffff;
+    
+    /*border: 2px solid black;*/
+}
+
+ion-item{
+    margin-bottom: 30px;
+}
+
+
