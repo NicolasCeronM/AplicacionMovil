@@ -15,10 +15,9 @@ export class HomePage {
 
   constructor(private activeroute: ActivatedRoute, private router: Router) {
     this.activeroute.queryParams.subscribe(params => {
-      console.log(params);
       this.state = this.router.getCurrentNavigation()?.extras.state;
-
       this.user=this.state.user
+      console.log(this.user);
     })
   }
   

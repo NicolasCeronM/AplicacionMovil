@@ -7,6 +7,7 @@ import { Router, NavigationExtras } from '@angular/router';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage {
+  hide = true;
 
   user = {
     username: "",

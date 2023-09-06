@@ -13,6 +13,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {ThemePalette} from '@angular/material/core';
 import {NgFor} from '@angular/common';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {NgIf} from '@angular/common';
 
 @NgModule({
   imports: [
@@ -20,15 +21,14 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     FormsModule,
     IonicModule,
     LoginPageRoutingModule,
-    FormsModule,
     MatFormFieldModule, 
     MatInputModule, 
     MatButtonModule, 
     MatTooltipModule, 
     MatIconModule,
     MatCheckboxModule, 
-    NgFor, 
-    FormsModule
+    NgFor,  
+    NgIf, 
   ],
   declarations: [LoginPage]
 })
