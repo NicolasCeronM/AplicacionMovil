@@ -1,28 +1,42 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Recuperar Contraseña</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Recuperar Contraseña</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
   <div class="container">
-    <ion-input label="Nombre Usuario" labelPlacement="floating" [counter]="true" maxlength="30"></ion-input>
 
-    <ion-input
-      id="custom-input"
-      label="Nueva Contraseña"
-      labelPlacement="floating"
-      [counter]="true"
-      maxlength="8"
-      [counterFormatter]="customCounterFormatter"
-    ></ion-input>
+    <!--Header-->
 
-    <ion-button expand="block" (click)="IrAlHome()">Recuperar</ion-button>
+    <div class="header">
+
+      <p>Recuperar Contraseña</p>
+
+    </div>
+
+    <!--Contenido principal-->
+
+    <div class="content">
+
+      <ion-input type="email" fill="solid" label="Nombre Usuario" labelPlacement="floating" helperText="Ingrese Nombre Usuario"
+        errorText="Invalid User" ngModel user></ion-input>
+        
+
+      <ion-button expand="block" shape="round" (click)="IrAlHome()">Recuperar</ion-button>
+
+
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+
+
+    <!--Footer-->
+
+    <div class="footer">
+    </div>
   </div>
 </ion-content>

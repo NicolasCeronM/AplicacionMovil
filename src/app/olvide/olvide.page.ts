@@ -7,6 +7,7 @@ import { Router, NavigationExtras } from '@angular/router';
   styleUrls: ['./olvide.page.scss'],
 })
 export class OlvidePage {
+  hide = true;
 
    user = {
     username: "",

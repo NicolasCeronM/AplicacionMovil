@@ -1,0 +1,33 @@
+.container{
+    background-color: #ffa200;
+}
+
+.header{
+    text-align: center;
+    font-weight: 700;
+    font-size: 48px;
+    color: #ffffff;
+    padding: 5%;
+    height: 200px;
+}
+
+.content{
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    padding: 5%;
+    background-color: #ffffff;
+    
+    /*border: 2px solid black;*/
+}
+
+ion-item{
+    margin-bottom: 30px;
+}
+
+.text-center{
+    text-align: center;
+}
+.input-form{
+    background-color: #ffffff;
+    width: 100%;
+}
