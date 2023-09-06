@@ -3,12 +3,15 @@
 }
 
 .header{
+    height: 200px;
     text-align: center;
-    font-weight: 700;
-    font-size: 48px;
+}
+
+.title{
+    padding: 5%;
+    font-size: 50px;
     color: #ffffff;
-    padding: 7%;
-    height: 250px;
+    font-weight: 500;
 }
 
 .content{
@@ -18,10 +21,6 @@
     background-color: #ffffff;
     
     /*border: 2px solid black;*/
-}
-
-ion-item{
-    margin-bottom: 30px;
 }
 
 .text-center{

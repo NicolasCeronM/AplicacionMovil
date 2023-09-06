@@ -1,13 +1,22 @@
 <ion-content [fullscreen]="true">
 
   <div class="container">
-    
 
     <!--Header-->
 
     <div class="header">
 
-      <p>Recuperar Contraseña</p>
+      <ion-grid fixed>
+
+        <ion-row>
+          <ion-col size="12" class="title">Recuperar</ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col size="12" class="title">Contraseña</ion-col>
+        </ion-row>
+
+      </ion-grid>
 
     </div>
 
@@ -15,25 +24,24 @@
 
     <div class="content">
 
-      <ion-input type="email" fill="solid" label="Nombre Usuario" labelPlacement="floating" helperText="Ingrese Nombre Usuario"
-        errorText="Invalid User" ngModel user></ion-input>
+      <ion-grid fixed>
+        <ion-row>
+          <ion-col size="12">
+
+            <mat-form-field class="input-form">
+              <mat-label >Nombre de usuario</mat-label>
+              <input [(ngModel)]="user.username" matInput>
+            </mat-form-field>
+
+          </ion-col>
+        </ion-row>
+      </ion-grid>
         
 
       <ion-button expand="block" shape="round" (click)="IrAlHome()">Recuperar</ion-button>
 
 
     </div>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-
-
 
     <!--Footer-->
 
