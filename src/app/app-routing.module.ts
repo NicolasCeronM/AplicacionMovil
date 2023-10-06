@@ -13,8 +13,21 @@ const routes: Routes = [
   },
   {
     path: 'login',
+    redirectTo: 'login',
+    pathMatch: 'full'
+  },
+  {
+    path: '**',
+    redirectTo: 'e404',
+    pathMatch: 'full'
+  },
+
+  //! ---------------- !
+  {
+    path: 'login',
     loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
-  },  {
+  },
+  {
     path: 'olvide',
     loadChildren: () => import('./olvide/olvide.module').then( m => m.OlvidePageModule)
   },
