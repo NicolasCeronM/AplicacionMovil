@@ -18,6 +18,10 @@ const routes: Routes = [
     path: 'olvide',
     loadChildren: () => import('./olvide/olvide.module').then( m => m.OlvidePageModule)
   },
+  {
+    path: 'e404',
+    loadChildren: () => import('./e404/e404.module').then( m => m.E404PageModule)
+  },
 
 ];
 

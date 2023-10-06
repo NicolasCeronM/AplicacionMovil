@@ -16,6 +16,7 @@ export class LoginPage {
 
   constructor(private router: Router) { }
 
+
   IrAlHome() {
     let navegationExtras: NavigationExtras = {
       state: {
