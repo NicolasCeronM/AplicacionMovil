@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
+import { ApiService } from '../service/api.service';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,7 @@ export class LoginPage {
     password: ""
   }
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private api: ApiService) { }
 
 
   IrAlHome() {
@@ -24,6 +25,17 @@ export class LoginPage {
       }
     }
     this.router.navigate(['/home'], navegationExtras)
+  }
+
+  cargarApi(){
+
+    this.api.get().subscribe((contenido) =>{
+      console.log(contenido)
+    },
+    (error) =>{
+      console.log(error)
+    })
+
   }
 
 
