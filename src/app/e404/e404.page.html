@@ -1,11 +1,14 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>e404</ion-title>
+  <ion-toolbar class="amarilo">
+    <ion-title>page not found</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content class="ion-padding">
+  <ion-img src="assets/img/e404.svg"></ion-img>
 
-  <h1>NOTFOUND404</h1>
-  
+  <ion-button routerLink="/login" expand="block" class="ion-margin-top amarillo"> 
+    <ion-icon name="home" slot="start"></ion-icon>
+    go back login</ion-button>
 </ion-content>
+
