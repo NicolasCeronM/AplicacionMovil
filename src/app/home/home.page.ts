@@ -13,7 +13,7 @@ export class HomePage {
   user: any;
   
 
-  constructor(private activeroute: ActivatedRoute, private router: Router) {
+  constructor(private activeroute: ActivatedRoute, private router: Router) { //Funcion para recibir lo que se manda 
     this.activeroute.queryParams.subscribe(params => {
       this.state = this.router.getCurrentNavigation()?.extras.state;
       this.user=this.state.user

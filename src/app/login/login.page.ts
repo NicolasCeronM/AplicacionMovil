@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, NavigationExtras } from '@angular/router';
+import { Router, NavigationExtras , ActivatedRoute} from '@angular/router';
 import { ApiService } from '../service/api.service';
+import { AlertController } from '@ionic/angular';
+
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -8,6 +11,8 @@ import { ApiService } from '../service/api.service';
 })
 export class LoginPage {
   hide = true;
+
+  state: any;
 
   recuerdame = false
 
@@ -18,7 +23,7 @@ export class LoginPage {
 
   usuarios: any
 
-  constructor(private router: Router, private api: ApiService) { }
+  constructor(private router: Router, private api: ApiService, private alertController: AlertController, private activeroute: ActivatedRoute) { }
 
   ngOnInit() {
 
@@ -26,15 +31,29 @@ export class LoginPage {
 
     this.api.get().subscribe(res => {
       this.usuarios = res
-      console.log(this.usuarios)
+      //console.log(this.usuarios) Muestra los datos de la API en la consola
 
     })
+
+    //Funcion para recibir lo que se manda de Olvide
+    this.activeroute.queryParams.subscribe(params => {
+      this.state = this.router.getCurrentNavigation()?.extras.state;
+      console.log(this.state)
+      if(this.state){
+        
+      this.user.username = this.state.username
+      this.user.password = this.state.password
+
+      }
+      
+    })
+
 
 
   }
 
 
-  IrAlHome() {
+  async IrAlHome() {
 
     //todo| Validamos el inicio de sesion con datos de la API
 
@@ -49,15 +68,23 @@ export class LoginPage {
 
         }
 
-        let navegationExtras: NavigationExtras = {
+        let navegationExtras: NavigationExtras = { //Se envia el user al home
           state: {
             user: this.user
           }
         }
-
         this.router.navigate(['/home'], navegationExtras)
+
+        break;
       } else {
-        console.log('NO PAPITO')
+        const alert = await this.alertController.create({
+          header: 'Error',
+          message: 'Usuario no encontrado',
+          buttons: ['OK'],
+        });
+        await alert.present();
+
+        break;
       }
     }
   }
