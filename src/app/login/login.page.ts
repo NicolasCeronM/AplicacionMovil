@@ -1,97 +1,78 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, NavigationExtras , ActivatedRoute} from '@angular/router';
+import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../service/api.service';
 import { AlertController } from '@ionic/angular';
-
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage {
+export class LoginPage implements OnInit {
   hide = true;
-
   state: any;
-
-  recuerdame = false
+  recuerdame = false;
 
   user = {
-    username: "",
-    password: ""
-  }
+    username: '',
+    password: '',
+  };
 
-  usuarios: any
+  usuarios: any;
 
-  constructor(private router: Router, private api: ApiService, private alertController: AlertController, private activeroute: ActivatedRoute) { }
+  constructor(
+    private router: Router,
+    private api: ApiService,
+    private alertController: AlertController,
+    private activeroute: ActivatedRoute
+  ) {}
 
   ngOnInit() {
+    // Se guarda la API en la variable
+    this.api.get().subscribe((res) => {
+      this.usuarios = res;
+      // console.log(this.usuarios); // Muestra los datos de la API en la consola
+    });
 
-    //Se carga el contenido de la api a la variable
 
-    this.api.get().subscribe(res => {
-      this.usuarios = res
-      //console.log(this.usuarios) Muestra los datos de la API en la consola
-
-    })
-
-    //Funcion para recibir lo que se manda de Olvide
-    this.activeroute.queryParams.subscribe(params => {
+    // Función para recibir lo que se manda de Olvide
+    this.activeroute.queryParams.subscribe((params) => {
       this.state = this.router.getCurrentNavigation()?.extras.state;
-      console.log(this.state)
-      if(this.state){
-        
-      this.user.username = this.state.username
-      this.user.password = this.state.password
-
+      // console.log(this.state); Muestra lo que se manda de Olvide
+      if (this.state) {
+        this.user.username = this.state.username;
+        this.user.password = this.state.password;
       }
-      
-    })
-
-
-
+    });
   }
-
 
   async IrAlHome() {
+    // Validamos el inicio de sesión con datos de la API
+    let usuarioEncontrado = false;
 
-    //todo| Validamos el inicio de sesion con datos de la API
+    for (const item of this.usuarios) {
+      if (this.user.username === item.nombre_usuario && this.user.password === item.contrasena) {
+        usuarioEncontrado = true;
+        
 
-    for (let i = 0; i < this.usuarios.length; i++) { //Recorre la lista de usuarios
-      const item = this.usuarios[i]
-
-      if (this.user.username == item.nombre_usuario) { //Vlida el ingeso de usuario
-
-        if (this.recuerdame) {
-
-          localStorage.setItem('username', this.user.username)
-
-        }
-
-        let navegationExtras: NavigationExtras = { //Se envia el user al home
+        const navegationExtras: NavigationExtras = {
           state: {
-            user: this.user
-          }
-        }
-        this.router.navigate(['/home'], navegationExtras)
-
-        break;
-      } else {
-        const alert = await this.alertController.create({
-          header: 'Error',
-          message: 'Usuario no encontrado',
-          buttons: ['OK'],
-        });
-        await alert.present();
-
-        break;
+            user: this.user,
+          },
+        };
+        localStorage.setItem('user',JSON.stringify(this.user));
+        localStorage.setItem('ingresado','true');
+        this.router.navigate(['/home'], navegationExtras);
       }
     }
+
+    if (!usuarioEncontrado) {
+      const alert = await this.alertController.create({
+        header: 'Error',
+        message: 'Usuario o contraseña Incorrecto',
+        buttons: ['OK'],
+      });
+      await alert.present();
+    }
   }
-
-
-
-
-
 }
-

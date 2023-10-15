@@ -28,14 +28,15 @@ export class OlvidePage {
     })
   }
 
-  recuperar() {
+  async recuperar() {
+    
+    // Validamos el inicio de sesión con datos de la API
+    let usuarioEncontrado = false;
 
-    //todo| Validamos el inicio de sesion con datos de la API
+    for (const item of this.usuarios) {
 
-    for (let i = 0; i < this.usuarios.length; i++) { //Recorre la lista de usuarios
-      const item = this.usuarios[i]
-
-      if (this.username == item.nombre_usuario) { //Vlida el ingeso de usuario
+      if (this.username === item.nombre_usuario) {
+        usuarioEncontrado = true;
 
         let navegationExtras: NavigationExtras = {
           state: {
@@ -44,17 +45,18 @@ export class OlvidePage {
           }
         }
         this.router.navigate(['/login'], navegationExtras)
-
-        break;
-      } else {
-        ;
-
-        break;
       }
     }
+
+    if (!usuarioEncontrado) {
+      const alert = await this.alertController.create({
+        header: 'Error',
+        message: 'Usuario no encontrado',
+        buttons: ['OK'],
+      });
+      await alert.present();
+    }
+
   }
-
-
-
 
 }

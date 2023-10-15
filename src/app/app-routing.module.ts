@@ -1,10 +1,13 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { NoIngresadoGuard } from './no-ingresado.guard';
+import { IngresadoGuard } from './ingresado.guard';
 
 const routes: Routes = [
   {
     path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule),
+    canActivate:[IngresadoGuard]
   },
   {
     path: '',
@@ -18,11 +21,13 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
+    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule),
+    canActivate: [NoIngresadoGuard]
   },
   {
     path: 'olvide',
-    loadChildren: () => import('./olvide/olvide.module').then( m => m.OlvidePageModule)
+    loadChildren: () => import('./olvide/olvide.module').then( m => m.OlvidePageModule),
+    canActivate: [NoIngresadoGuard]
   },
   {
     path: 'e404',
