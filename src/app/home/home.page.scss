@@ -25,3 +25,12 @@
 #container a {
   text-decoration: none;
 }
+
+ion-avatar.ion-text-center {
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  height: 100px; /* Ajusta la altura deseada */
+  width: 100px; /* Ajusta el ancho deseado */
+  /* También puedes ajustar el tamaño deseado con height y width */
+}
