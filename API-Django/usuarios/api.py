@@ -6,3 +6,5 @@ class UsuarioViewsets(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = UsuarioSerializers
+
+# class Login()

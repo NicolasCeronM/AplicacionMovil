@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../service/api.service';
 import { AlertController } from '@ionic/angular';
+import { Barcode, BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
 
 @Component({
   selector: 'app-login',
@@ -18,6 +19,9 @@ export class LoginPage implements OnInit {
     password: '',
   };
 
+  isSupported = false;
+  barcodes: Barcode[] = [];
+
   usuarios: any;
 
   constructor(
@@ -25,7 +29,7 @@ export class LoginPage implements OnInit {
     private api: ApiService,
     private alertController: AlertController,
     private activeroute: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit() {
     // Se guarda la API en la variable
@@ -44,7 +48,48 @@ export class LoginPage implements OnInit {
         this.user.password = this.state.password;
       }
     });
+
+
+    //PRUEBAS DE ESCANER
+
+
+
+
+
+
+
+    BarcodeScanner.isSupported().then((result) => {
+      this.isSupported = result.supported;
+    });
   }
+
+  async scan(): Promise<void> {
+    const granted = await this.requestPermissions();
+    if (!granted) {
+      this.presentAlert();
+      return;
+    }
+    const { barcodes } = await BarcodeScanner.scan();
+    this.barcodes.push(...barcodes);
+  }
+
+  async requestPermissions(): Promise<boolean> {
+    const { camera } = await BarcodeScanner.requestPermissions();
+    return camera === 'granted' || camera === 'limited';
+  }
+
+  async presentAlert(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Permission denied',
+      message: 'Please grant camera permission to use the barcode scanner.',
+      buttons: ['OK'],
+    });
+    await alert.present();
+  }
+
+
+  // FIN DE PRUEBAS
+
 
   async IrAlHome() {
     // Validamos el inicio de sesión con datos de la API
@@ -53,15 +98,15 @@ export class LoginPage implements OnInit {
     for (const item of this.usuarios) {
       if (this.user.username === item.nombre_usuario && this.user.password === item.contrasena) {
         usuarioEncontrado = true;
-        
+
 
         const navegationExtras: NavigationExtras = {
           state: {
             user: this.user,
           },
         };
-        localStorage.setItem('user',JSON.stringify(this.user));
-        localStorage.setItem('ingresado','true');
+        localStorage.setItem('user', JSON.stringify(this.user));
+        localStorage.setItem('ingresado', 'true');
         this.router.navigate(['/home'], navegationExtras);
       }
     }
