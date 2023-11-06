@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../service/api.service';
 import { AlertController } from '@ionic/angular';
-import { Barcode, BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
 
 @Component({
   selector: 'app-login',
@@ -19,8 +18,7 @@ export class LoginPage implements OnInit {
     password: '',
   };
 
-  isSupported = false;
-  barcodes: Barcode[] = [];
+
 
   usuarios: any;
 
@@ -50,46 +48,9 @@ export class LoginPage implements OnInit {
     });
 
 
-    //PRUEBAS DE ESCANER
 
 
-
-
-
-
-
-    BarcodeScanner.isSupported().then((result) => {
-      this.isSupported = result.supported;
-    });
   }
-
-  async scan(): Promise<void> {
-    const granted = await this.requestPermissions();
-    if (!granted) {
-      this.presentAlert();
-      return;
-    }
-    const { barcodes } = await BarcodeScanner.scan();
-    this.barcodes.push(...barcodes);
-  }
-
-  async requestPermissions(): Promise<boolean> {
-    const { camera } = await BarcodeScanner.requestPermissions();
-    return camera === 'granted' || camera === 'limited';
-  }
-
-  async presentAlert(): Promise<void> {
-    const alert = await this.alertController.create({
-      header: 'Permission denied',
-      message: 'Please grant camera permission to use the barcode scanner.',
-      buttons: ['OK'],
-    });
-    await alert.present();
-  }
-
-
-  // FIN DE PRUEBAS
-
 
   async IrAlHome() {
     // Validamos el inicio de sesión con datos de la API

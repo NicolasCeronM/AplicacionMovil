@@ -10,9 +10,11 @@ import { HttpClientModule  } from "@angular/common/http";
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { QRCodeModule } from 'angularx-qrcode';
+
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, BrowserAnimationsModule,HttpClientModule],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, BrowserAnimationsModule,HttpClientModule,QRCodeModule],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })

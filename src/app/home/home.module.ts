@@ -10,13 +10,15 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatButtonModule} from '@angular/material/button';
 
+import { QRCodeModule } from 'angularx-qrcode';
+
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    HomePageRoutingModule,MatButtonModule, MatTooltipModule, MatIconModule
+    HomePageRoutingModule,MatButtonModule, MatTooltipModule, MatIconModule,QRCodeModule
   ],
   declarations: [HomePage]
 })

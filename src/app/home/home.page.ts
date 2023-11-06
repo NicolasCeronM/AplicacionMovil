@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { BarcodeScanner } from '@capacitor-community/barcode-scanner'; //Escanear Codigos QR
+import { ApiService } from '../service/api.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -14,7 +17,9 @@ export class HomePage {
 
   local_user: any;
 
-  constructor(private activeroute: ActivatedRoute, private router: Router) { //Funcion para recibir lo que se manda 
+  qr:any;
+
+  constructor(private activeroute: ActivatedRoute, private router: Router, private api: ApiService,private alertController: AlertController) { 
     
   }
 
@@ -34,6 +39,35 @@ export class HomePage {
     }
 
   }
+
+  //PRUEBAS DE ESCANER
+
+  async scanBarcode() {
+    const status = await BarcodeScanner.checkPermission({ force: true });
+
+    if (status.granted) {
+      BarcodeScanner.hideBackground();
+      const result = await BarcodeScanner.startScan();
+
+      if (result.hasContent) {
+
+        //Muestra una alerta con el contenido
+        const alert = await this.alertController.create({
+          header: 'Exito!',
+          message: result.content,
+          buttons: ['OK'],
+        });
+        await alert.present();
+
+        console.log('Código de barras escaneado:', result.content);
+      }
+    } else {
+      console.error('Permiso de cámara no concedido');
+    }
+  }
+
+  // FIN DE PRUEBAS
+
 
   salir(){
     localStorage.removeItem('ingresado');
