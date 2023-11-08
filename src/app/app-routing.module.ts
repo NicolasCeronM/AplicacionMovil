@@ -7,7 +7,7 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./home/home.module').then( m => m.HomePageModule),
-    // canActivate:[IngresadoGuard]
+     canActivate:[IngresadoGuard]
   },
   {
     path: '',
@@ -22,23 +22,24 @@ const routes: Routes = [
   {
     path: 'login',
     loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule),
-    //canActivate: [NoIngresadoGuard]
+    canActivate: [NoIngresadoGuard]
   },
   {
     path: 'olvide',
     loadChildren: () => import('./olvide/olvide.module').then( m => m.OlvidePageModule),
-    //canActivate: [NoIngresadoGuard]
+    canActivate: [NoIngresadoGuard]
   },
   {
     path: 'e404',
     loadChildren: () => import('./e404/e404.module').then( m => m.E404PageModule)
   },
-  
   {
     path: '**',
     redirectTo: 'e404',
     pathMatch: 'full'
   },
+  
+
 
 ];
 

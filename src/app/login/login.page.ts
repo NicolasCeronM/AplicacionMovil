@@ -63,7 +63,7 @@ export class LoginPage implements OnInit {
 
         const navegationExtras: NavigationExtras = {
           state: {
-            user: this.user,
+            user: item,
           },
         };
         localStorage.setItem('user', JSON.stringify(this.user));
