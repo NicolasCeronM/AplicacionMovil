@@ -36,7 +36,7 @@ export class HomePage {
 
   }
 
-  //PRUEBAS DE ESCANER
+  //BARCODE SCANER
 
   async scanBarcode() {
     const status = await BarcodeScanner.checkPermission({ force: true });
@@ -61,8 +61,6 @@ export class HomePage {
       console.error('Permiso de cámara no concedido');
     }
   }
-
-  // FIN DE PRUEBAS
 
 
   salir() {
