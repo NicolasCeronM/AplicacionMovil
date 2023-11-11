@@ -11,6 +11,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatButtonModule} from '@angular/material/button';
 
 import { QRCodeModule } from 'angularx-qrcode';
+import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx'
 
 
 
@@ -20,8 +21,13 @@ import { QRCodeModule } from 'angularx-qrcode';
     CommonModule,
     FormsModule,
     IonicModule,
-    HomePageRoutingModule,MatButtonModule, MatTooltipModule, MatIconModule,QRCodeModule,
+    HomePageRoutingModule,MatButtonModule, MatTooltipModule, MatIconModule,QRCodeModule
   ],
   declarations: [HomePage],
+  providers: [
+    // Agrega EmailComposer al array de proveedores
+    EmailComposer,
+    // ...
+  ],
 })
 export class HomePageModule {}

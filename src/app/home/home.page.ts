@@ -3,6 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { BarcodeScanner } from '@capacitor-community/barcode-scanner'; //Escanear Codigos QR
 import { ApiService } from '../service/api.service';
 import { AlertController } from '@ionic/angular';
+import { EmailComposer, EmailComposerOptions } from '@awesome-cordova-plugins/email-composer/ngx'
+
 
 @Component({
   selector: 'app-home',
@@ -17,14 +19,17 @@ export class HomePage {
 
   local_user: any;
 
-  qr = 'https://www.youtube.com'
+  qrData: any;
 
-  constructor(private activeroute: ActivatedRoute, private router: Router, private api: ApiService, private alertController: AlertController) {
+  content_visbility = 'hidden';
+
+  content = document.getElementById('content')
+
+  constructor(private activeroute: ActivatedRoute, private router: Router, private api: ApiService, private alertController: AlertController, private emailCompose: EmailComposer) {
 
   }
 
   ngOnInit() {
-
 
     this.activeroute.queryParams.subscribe(params => {
       this.state = this.router.getCurrentNavigation()?.extras.state;
@@ -32,35 +37,59 @@ export class HomePage {
       console.log(this.user);
     })
 
-
-
   }
 
-  //BARCODE SCANER
+  //BARCODE SCANER - Alumno
 
-  async scanBarcode() {
+  async checkPermission() {
+    // check or request permission
     const status = await BarcodeScanner.checkPermission({ force: true });
 
     if (status.granted) {
-      BarcodeScanner.hideBackground();
-      const result = await BarcodeScanner.startScan();
-
-      if (result.hasContent) {
-
-        //Muestra una alerta con el contenido
-        const alert = await this.alertController.create({
-          header: 'Exito!',
-          message: result.content,
-          buttons: ['OK'],
-        });
-        await alert.present();
-
-        console.log('Código de barras escaneado:', result.content);
-      }
-    } else {
-      console.error('Permiso de cámara no concedido');
+      // the user granted permission
+      return true;
     }
+
+    return false;
+  };
+
+
+  async startScan() {
+
+    const permisos = this.checkPermission();
+
+    if (!permisos) {
+      return;
+    }
+    await BarcodeScanner.hideBackground();
+    document.getElementById('main-content')?.classList.add('scanner-active')
+    document.getElementById('main-content')?.classList.add('ocultar')
+    const result = await BarcodeScanner.startScan();
+    console.log(result);
+    if(result.hasContent){
+      BarcodeScanner.showBackground();
+      document.getElementById('main-content')?.classList.remove('scanner-active')
+      document.getElementById('main-content')?.classList.remove('ocultar')
+
+      const alert = await this.alertController.create({
+        header: 'A Short Title Is Best',
+        subHeader: 'A Sub Header Is Optional',
+        message: result.content,
+        buttons: ['Action'],
+      });
+  
+      await alert.present();
+
+    }
+  };
+
+  //Genera Codigo QR - Profesor
+
+  generarCodigoQR() {
+
+    this.qrData = this.user.correo;
   }
+
 
 
   salir() {
@@ -68,6 +97,7 @@ export class HomePage {
     localStorage.removeItem('user');
     this.router.navigate(['/login']);
   }
+
 
 
 }

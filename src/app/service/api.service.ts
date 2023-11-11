@@ -8,7 +8,7 @@ import { Observable, retry } from 'rxjs';
 
 export class ApiService {
 
-  apiUrl = 'http://localhost:8000/api/usuarios/';
+  apiUrl = 'https://apimocha.com/pruebasduoc/usuarios ';
 
   constructor(private http: HttpClient) { }
 

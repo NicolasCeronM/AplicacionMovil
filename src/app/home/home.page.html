@@ -29,7 +29,7 @@
 </ion-menu>
 
 <!--todo| Contenido Principal-->
-<div class="ion-page" id="main-content">
+<body class="ion-page" id="main-content">
   <ion-header>
     <ion-toolbar>
       <ion-buttons slot="start">
@@ -38,11 +38,9 @@
       <ion-title>Registro de Asistencia</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-content class="ion-padding">
+  <ion-content class="" id="content">
 
     <div class="container">
-
-      <!-- <qrcode [qrdata]="qr"></qrcode>  LITERAL EL CODIGO QR-->
 
       <ion-grid fixed>
         <ion-row class="ion-align-items-center">
@@ -52,7 +50,8 @@
 
           <ion-col size="4">
             <ion-avatar class="ion-text-center">
-              <img alt="Silhouette of a person's head" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5SN_KxsoSxXWdLR-06xxWAmgkWe7vaUexgenQ1iu4&s" />
+              <img alt="Silhouette of a person's head"
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5SN_KxsoSxXWdLR-06xxWAmgkWe7vaUexgenQ1iu4&s" />
             </ion-avatar>
           </ion-col>
 
@@ -63,32 +62,43 @@
             <h1>Bienvenido {{user.nombre_usuario}}</h1>
           </ion-col>
 
+    
+
         </ion-row>
       </ion-grid>
+
+      <!--GENERA CODIGO QR-->
+
+      <div class="qrcodeImage">
+        <qrcode [qrdata]="qrData" [allowEmptyString]="true" [ariaLabel]="'QR Code image with the following content...'"
+          [cssClass]="'center'" [colorDark]="'#000000ff'" [colorLight]="'#ffffffff'" [elementType]="'canvas'"
+          [errorCorrectionLevel]="'M'" [imageSrc]="'./assets/angular-logo.png'" [imageHeight]="75" [imageWidth]="75"
+          [margin]="4" [scale]="1" [title]="'A custom title attribute'" [width]="300"></qrcode>
+      </div>
 
     </div>
 
   </ion-content>
-
 
   <ion-footer>
     <!--VISTA ALUMNO-->
     <ion-toolbar *ngIf="user.tipo_usuario.id===1">
 
 
-      <ion-fab-button (click)="scanBarcode()">
+      <ion-fab-button (click)="startScan()" hidden="scanActivate">
         <ion-icon name="scan"></ion-icon>
       </ion-fab-button>
+
 
     </ion-toolbar>
     <!--VISTA PROFESOR-->
     <ion-toolbar *ngIf="user.tipo_usuario.id===2">
 
 
-      <ion-fab-button>
+      <ion-fab-button (click)="generarCodigoQR()">
         <ion-icon name="qr-code-outline"></ion-icon>
       </ion-fab-button>
 
     </ion-toolbar>
   </ion-footer>
-</div>
+</body>

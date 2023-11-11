@@ -29,3 +29,12 @@
 .amarillo {
     --background: #E0D148;
 }
+
+.scanner-active {
+    --background: transparent;
+    --ion-background-color: transparent;
+}
+
+.ocultar{
+    visibility: hidden;
+}
