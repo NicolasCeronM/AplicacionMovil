@@ -18,6 +18,8 @@ export class LoginPage implements OnInit {
     password: '',
   };
 
+
+
   usuarios: any;
 
   constructor(
@@ -25,7 +27,7 @@ export class LoginPage implements OnInit {
     private api: ApiService,
     private alertController: AlertController,
     private activeroute: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit() {
     // Se guarda la API en la variable
@@ -44,6 +46,10 @@ export class LoginPage implements OnInit {
         this.user.password = this.state.password;
       }
     });
+
+
+
+
   }
 
   async IrAlHome() {
@@ -53,15 +59,15 @@ export class LoginPage implements OnInit {
     for (const item of this.usuarios) {
       if (this.user.username === item.nombre_usuario && this.user.password === item.contrasena) {
         usuarioEncontrado = true;
-        
+
 
         const navegationExtras: NavigationExtras = {
           state: {
-            user: this.user,
+            user: item,
           },
         };
-        localStorage.setItem('user',JSON.stringify(this.user));
-        localStorage.setItem('ingresado','true');
+        localStorage.setItem('user', JSON.stringify(this.user));
+        localStorage.setItem('ingresado', 'true');
         this.router.navigate(['/home'], navegationExtras);
       }
     }

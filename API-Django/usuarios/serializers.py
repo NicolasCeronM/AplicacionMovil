@@ -11,3 +11,8 @@ class UsuarioSerializers(serializers.ModelSerializer):
     class Meta:
         model=Usuario
         fields = '__all__'
+
+class Login(serializers.ModelSerializer):
+    class Meta:
+        model=Usuario
+        fields = ['nombre_usuario','contrasena']
