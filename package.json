@@ -33,6 +33,7 @@
     "@capacitor/keyboard": "5.0.6",
     "@capacitor/status-bar": "5.0.6",
     "@cordobo/qrcode": "^1.5.0",
+    "@ionic-native/email-composer": "^5.36.0",
     "@ionic/angular": "^7.0.0",
     "@techiediaries/ngx-qrcode": "^9.1.0",
     "angular2-qrcode": "^2.0.3",
