@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../service/api.service';
 import { AlertController } from '@ionic/angular';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,15 @@ export class LoginPage implements OnInit {
   user = {
     username: '',
     password: '',
+  };
+
+  nuevaAsistencia = {
+    // Puedes agregar aquí los datos necesarios para la nueva asistencia
+    // Por ejemplo:
+    profesorId: 1,
+    alumnoId: 2,
+    fecha: '2023-11-20',
+    // ... otros datos ...
   };
 
 
@@ -46,8 +56,6 @@ export class LoginPage implements OnInit {
         this.user.password = this.state.password;
       }
     });
-
-
 
 
   }

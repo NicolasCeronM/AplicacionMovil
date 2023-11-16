@@ -73,7 +73,28 @@ export class HomePage {
       document.getElementById('main-content')?.classList.remove('scanner-active')
       document.getElementById('main-content')?.classList.remove('ocultar')
 
-      //Enviar correo
+      //Se guarda en la base de datos
+
+      let nuevaAsistencia = {
+
+        "id": 10,
+        "fecha": "2023-11-15",
+        "hora": "2023-11-15T23:10:57Z",
+        "alumno": 1,
+        "profesor": 8
+
+      };
+
+      this.api.asitencia(nuevaAsistencia).subscribe((res) => {
+        console.log(res)
+      },
+        (error) => {
+          console.error('Status:', error.status);
+          console.error('Error:', error.error);
+          console.error('Error:', error);
+        });
+
+      //Enviar correo al profesor
 
       let email = {
         app: 'gmail',
@@ -89,18 +110,9 @@ export class HomePage {
         ${this.user.correo}`,
         isHtml: true
       };
-  
+
       // Abre el correo
       this.emailComposer.open(email);
-
-      // const alert = await this.alertController.create({
-      //   header: 'A Short Title Is Best',
-      //   subHeader: 'A Sub Header Is Optional',
-      //   message: 'Registro Enviado',
-      //   buttons: ['Action'],
-      // });
-
-      // await alert.present();
 
     }
   };
@@ -119,13 +131,5 @@ export class HomePage {
     localStorage.removeItem('user');
     this.router.navigate(['/login']);
   }
-
-  //PRUEBAS 
-
-  sendMail() {
-    
-  }
-
-
 
 }

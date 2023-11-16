@@ -8,12 +8,18 @@ import { Observable, retry } from 'rxjs';
 
 export class ApiService {
 
-  apiUrl = 'https://apimocha.com/usuariosduoc/usuarios ';
+  apiUrl = 'https://jbbrf9d9-8000.brs.devtunnels.ms/api/usuarios/';
+
+  asitencia_url='https://jbbrf9d9-8000.brs.devtunnels.ms/api/asitencia/'
 
   constructor(private http: HttpClient) { }
 
 
   get():Observable<any>{
     return this.http.get(this.apiUrl).pipe(retry(3))
+  }
+
+  asitencia(body: any):Observable<any>{
+    return this.http.post(this.asitencia_url, body).pipe(retry(3))
   }
 }

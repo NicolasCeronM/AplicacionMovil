@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Usuario, TipoUsuario
+from .models import Usuario, TipoUsuario, Asistencia
 
 class TipoUsuarioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,6 +10,11 @@ class UsuarioSerializers(serializers.ModelSerializer):
     tipo_usuario = TipoUsuarioSerializer(read_only=True)
     class Meta:
         model=Usuario
+        fields = '__all__'
+
+class AsistenciaSerializers(serializers.ModelSerializer):
+    class Meta:
+        model=Asistencia
         fields = '__all__'
 
 class Login(serializers.ModelSerializer):
