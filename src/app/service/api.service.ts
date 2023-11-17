@@ -22,4 +22,8 @@ export class ApiService {
   asitencia(body: any):Observable<any>{
     return this.http.post(this.asitencia_url, body).pipe(retry(3))
   }
+
+  getAsitencia():Observable<any>{
+    return this.http.get(this.asitencia_url).pipe(retry(3))
+  }
 }

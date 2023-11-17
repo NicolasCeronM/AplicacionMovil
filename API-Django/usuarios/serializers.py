@@ -12,7 +12,13 @@ class UsuarioSerializers(serializers.ModelSerializer):
         model=Usuario
         fields = '__all__'
 
+class ProfesorSerializers(serializers.ModelSerializer):
+    class Meta:
+        model=Usuario
+        fields = ['id','nombre','apellido']
+
 class AsistenciaSerializers(serializers.ModelSerializer):
+    #profesor = ProfesorSerializers(read_only=True)
     class Meta:
         model=Asistencia
         fields = '__all__'

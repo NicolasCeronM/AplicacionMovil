@@ -10,7 +10,7 @@
   <ion-content class="ion-padding">
     <ion-list>
       <ion-item>
-        <a>Generar Codigo QR</a>
+        <button>Mi asitencia</button>
       </ion-item>
       <ion-item>
         <button mat-button color="warn" (click)="salir()">Salir</button>
@@ -65,14 +65,45 @@
         </ion-row>
       </ion-grid>
 
-      <!--GENERA CODIGO QR-->
+      <!--GENERA CODIGO QR - PROFESOR-->
 
       <div class="qrcodeImage">
         <qrcode [qrdata]="qrData" [allowEmptyString]="true" [ariaLabel]="'QR Code image with the following content...'"
           [cssClass]="'center'" [colorDark]="'#000000ff'" [colorLight]="'#ffffffff'" [elementType]="'canvas'"
-          [errorCorrectionLevel]="'M'" [imageSrc]="'./assets/angular-logo.png'" [imageHeight]="75" [imageWidth]="75"
-          [margin]="4" [scale]="1" [title]="'A custom title attribute'" [width]="300"></qrcode>
+          [errorCorrectionLevel]="'M'" [imageSrc]="" [imageHeight]="75" [imageWidth]="75"
+          [margin]="4" [scale]="1" [title]="'A custom title attribute'" [width]="300" ></qrcode>
       </div>
+
+      <ion-grid fixed>
+        <ion-row >
+          <ion-col size="12">
+
+            <ion-card *ngIf="asistencia">
+
+              <ion-card-header>
+                <ion-card-title>Asistencias recientes</ion-card-title>
+                <ion-card-subtitle><ion-button (click)="cargarAsistencia()"><ion-icon name="refresh-outline"></ion-icon></ion-button></ion-card-subtitle>
+              </ion-card-header>
+
+              <!--ESTA INCOMPLETO FALTA FILTRAR POR USUARIO-->
+
+              <ion-card-content >
+                <ion-list *ngFor="let i of asistencia">
+
+                  <ion-item *ngIf="i.alumno == user.id">
+                    <ion-label>{{i.fecha}} | Profesor {{i.profesor.nombre}} {{i.profesor.apellido}}</ion-label>
+                  </ion-item>
+
+                </ion-list>
+              </ion-card-content>
+
+            </ion-card>
+            
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      
 
     </div>
 

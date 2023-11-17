@@ -17,14 +17,12 @@ export class HomePage {
   state: any;
 
   user: any;
+  profesor_data:any;
+  asistencia:any;
 
   local_user: any;
 
   qrData: any;
-
-  content_visbility = 'hidden';
-
-  content = document.getElementById('content')
 
   constructor(private activeroute: ActivatedRoute, private router: Router, private api: ApiService, private alertController: AlertController, private emailComposer: EmailComposer,) {
     this.fecha = new Date();
@@ -36,7 +34,12 @@ export class HomePage {
     this.activeroute.queryParams.subscribe(params => {
       this.state = this.router.getCurrentNavigation()?.extras.state;
       this.user = this.state.user
-      console.log(this.user);
+      //console.log(this.user);
+    })
+
+    this.api.getAsitencia().subscribe((res) => {
+      console.log(res)
+      this.asistencia=res;
     })
 
   }
@@ -55,7 +58,7 @@ export class HomePage {
     return false;
   };
 
-
+  //TODO| SCANER
   async startScan() {
 
     const permisos = this.checkPermission();
@@ -67,8 +70,10 @@ export class HomePage {
     document.getElementById('main-content')?.classList.add('scanner-active')
     document.getElementById('main-content')?.classList.add('ocultar')
     const result = await BarcodeScanner.startScan();
-    console.log(result);
+    //console.log(result);
     if (result.hasContent) {
+      this.profesor_data = JSON.parse(result.content)
+      console.log(this.profesor_data)
       BarcodeScanner.showBackground();
       document.getElementById('main-content')?.classList.remove('scanner-active')
       document.getElementById('main-content')?.classList.remove('ocultar')
@@ -77,11 +82,10 @@ export class HomePage {
 
       let nuevaAsistencia = {
 
-        "id": 10,
-        "fecha": "2023-11-15",
-        "hora": "2023-11-15T23:10:57Z",
-        "alumno": 1,
-        "profesor": 8
+        "fecha": Date,
+        "hora": this.fecha,
+        "alumno": this.user.id,
+        "profesor": this.profesor_data.id
 
       };
 
@@ -117,15 +121,22 @@ export class HomePage {
     }
   };
 
-  //Genera Codigo QR - Profesor
+  cargarAsistencia(){
+    this.api.getAsitencia().subscribe((res) => {
+      console.log(res)
+      this.asistencia=res;
+    })
+    
+  }
 
+  //TODO| Genera Codigo QR - Profesor
   generarCodigoQR() {
 
-    this.qrData = this.user.correo;
+    this.qrData = JSON.stringify(this.user);
   }
 
 
-
+//TODO| SALE DE LA APLICACION
   salir() {
     localStorage.removeItem('ingresado');
     localStorage.removeItem('user');
