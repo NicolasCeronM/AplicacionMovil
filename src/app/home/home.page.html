@@ -10,9 +10,6 @@
   <ion-content class="ion-padding">
     <ion-list>
       <ion-item>
-        <button>Mi asitencia</button>
-      </ion-item>
-      <ion-item>
         <button mat-button color="warn" (click)="salir()">Salir</button>
       </ion-item>
     </ion-list>
@@ -59,7 +56,7 @@
           </ion-col>
 
           <ion-col size="12" class="ion-text-center">
-            <h1>Bienvenido {{usuario.nombre_usuario}}</h1>
+            <h1>Bienvenido {{usuario?.nombre_usuario}}</h1>
           </ion-col>
 
         </ion-row>
@@ -88,7 +85,7 @@
               <!--ESTA INCOMPLETO FALTA FILTRAR POR USUARIO-->
 
               <ion-card-content >
-                <ion-list *ngFor="let i of asistencia.asistencias">
+                <ion-list *ngFor="let i of asistencia?.asistencias">
 
                   <ion-item>
                     <ion-label>{{i.fecha}} | Profesor: {{i.profesor.nombre}} {{i.profesor.apellido}} | hora: {{i.hora}}</ion-label>
@@ -111,7 +108,7 @@
 
   <ion-footer>
     <!--VISTA ALUMNO-->
-    <ion-toolbar *ngIf="usuario.tipo_usuario.id===1">
+    <ion-toolbar *ngIf="usuario?.tipo_usuario?.id===1">
 
 
       <ion-fab-button (click)="startScan()" hidden="scanActivate">
@@ -121,7 +118,7 @@
 
     </ion-toolbar>
     <!--VISTA PROFESOR-->
-    <ion-toolbar *ngIf="usuario.tipo_usuario.id===2">
+    <ion-toolbar *ngIf="usuario?.tipo_usuario?.id===2">
 
 
       <ion-fab-button (click)="generarCodigoQR()">

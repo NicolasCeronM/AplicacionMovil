@@ -27,8 +27,6 @@ export class HomePage {
 
   asistencia: any;
 
-  local_user: any;
-
   qrData: any;
 
   constructor(private activeroute: ActivatedRoute, private router: Router, private api: ApiService, private alertController: AlertController, private emailComposer: EmailComposer,) {
@@ -46,20 +44,11 @@ export class HomePage {
     //CARGA USUARIO
     this.api.obtenerUsuario(this.nombre_usuario).subscribe((res)=> {
       this.usuario = res.usuario
-      //console.log(this.usuario)
-    })
-
-    this.api.obtenerAsistencia({"id":this.usuario.id}).subscribe((res) =>{
-      console.log(res.asistencias)
-      this.asistencia= res.asistencias
-      console.log('SI SE PUEDO')
-    },
-    (error) => {
-      console.log(error)
-      console.log('No se puedo')
+      console.log(this.usuario)
     })
     
   }
+
 
   //BARCODE SCANER - Alumno
 

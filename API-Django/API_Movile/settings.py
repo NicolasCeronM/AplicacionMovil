@@ -41,11 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders'
 ]
-CORS_ALLOW_ALL_ORIGINS = False  # Solo permite solicitudes desde orígenes específicos.
-CORS_ALLOW_CREDENTIALS = True  # Permite las credenciales (por ejemplo, cookies) en las solicitudes.
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8100',  # Agrega el origen de tu aplicación Angular.
-]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -56,6 +52,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware'
+]
+
+CORS_ALLOW_ALL_ORIGINS = False  # Solo permite solicitudes desde orígenes específicos.
+CORS_ALLOW_CREDENTIALS = False  # Permite las credenciales (por ejemplo, cookies) en las solicitudes.
+CORS_ALLOWED_ORIGINS = [
+    'https://localhost',  # Agrega el origen de tu aplicación Angular.
+    'http://localhost:8100'
 ]
 
 ROOT_URLCONF = 'API_Movile.urls'
