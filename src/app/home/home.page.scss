@@ -34,3 +34,35 @@ ion-avatar.ion-text-center {
   width: 100px; /* Ajusta el ancho deseado */
   /* También puedes ajustar el tamaño deseado con height y width */
 }
+
+/* Put this code in your CSS file */
+
+/* The div container */
+.qrcodeImage {
+  display: flex;
+  flex: 1;
+}
+
+/* Add custom styles here */
+.center {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+}
+
+ion-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+ion-toolbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+ion-fab-button {
+  /* Puedes ajustar estos estilos según tus preferencias */
+  margin: 0 auto;
+}
