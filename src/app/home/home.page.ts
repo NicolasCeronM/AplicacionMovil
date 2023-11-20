@@ -98,9 +98,9 @@ export class HomePage {
 
       let email = {
         app: 'gmail',
-        to: result.content,
+        to: this.profesor_data.correo,
         subject: 'Confirmación de Asistencia a Clase',
-        body: `<p>Estimado profesor ${result.content}</p>
+        body: `<p>Estimado profesor ${this.profesor_data.nombre}</p>
 
         <p>Espero que este mensaje le encuentre bien. La razón de la presente es confirmar mi participación en la clase de hoy, ${this.fecha}.</p>
         
