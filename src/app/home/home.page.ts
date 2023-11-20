@@ -4,6 +4,7 @@ import { BarcodeScanner } from '@capacitor-community/barcode-scanner'; //Escanea
 import { ApiService } from '../service/api.service';
 import { AlertController } from '@ionic/angular';
 import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
+import { error } from 'console';
 
 
 @Component({
@@ -16,9 +17,15 @@ export class HomePage {
 
   state: any;
 
-  user: any;
-  profesor_data:any;
-  asistencia:any;
+  profesor_data: any;
+
+  usuario: any;
+
+  nombre_usuario = {
+    'nombre_usuario':""
+  }
+
+  asistencia: any;
 
   local_user: any;
 
@@ -33,15 +40,25 @@ export class HomePage {
 
     this.activeroute.queryParams.subscribe(params => {
       this.state = this.router.getCurrentNavigation()?.extras.state;
-      this.user = this.state.user
-      //console.log(this.user);
+      this.nombre_usuario.nombre_usuario = this.state.user.nombre_usuario
     })
 
-    this.api.getAsitencia().subscribe((res) => {
-      console.log(res)
-      this.asistencia=res;
+    //CARGA USUARIO
+    this.api.obtenerUsuario(this.nombre_usuario).subscribe((res)=> {
+      this.usuario = res.usuario
+      //console.log(this.usuario)
     })
 
+    this.api.obtenerAsistencia({"id":this.usuario.id}).subscribe((res) =>{
+      console.log(res.asistencias)
+      this.asistencia= res.asistencias
+      console.log('SI SE PUEDO')
+    },
+    (error) => {
+      console.log(error)
+      console.log('No se puedo')
+    })
+    
   }
 
   //BARCODE SCANER - Alumno
@@ -80,23 +97,13 @@ export class HomePage {
 
       //Se guarda en la base de datos
 
-      let nuevaAsistencia = {
-
-        "fecha": Date,
-        "hora": this.fecha,
-        "alumno": this.user.id,
-        "profesor": this.profesor_data.id
-
-      };
-
-      this.api.asitencia(nuevaAsistencia).subscribe((res) => {
-        console.log(res)
+      this.api.asistencia({"alumno":this.usuario.id, "profesor":this.profesor_data.id}).subscribe((res) => {
+        console.log('ASISTENCIA REGISTRADA')
       },
-        (error) => {
-          console.error('Status:', error.status);
-          console.error('Error:', error.error);
-          console.error('Error:', error);
-        });
+      (error) => {
+        console.log(error)
+      })
+      
 
       //Enviar correo al profesor
 
@@ -110,21 +117,36 @@ export class HomePage {
         
         <p>Saludos cordiales</p>
         
-        ${this.user.nombre} ${this.user.apellido}<br>
-        ${this.user.correo}`,
+        ${this.usuario.nombre} ${this.usuario.apellido}<br>
+        ${this.usuario.correo}`,
         isHtml: true
       };
 
       // Abre el correo
       this.emailComposer.open(email);
 
+    }else{
+      const alert = await this.alertController.create({
+        header: 'Error',
+        message: 'Error al escanear codigo QR',
+        buttons: ['OK'],
+      });
+      await alert.present();
     }
   };
 
-  cargarAsistencia(){
-    this.api.getAsitencia().subscribe((res) => {
+  cargarAsistencia() {
+
+    //Carga asistencia de Alumno
+
+    this.api.obtenerAsistencia({"id":this.usuario.id}).subscribe((res) =>{
       console.log(res)
-      this.asistencia=res;
+      this.asistencia= res
+      console.log('SI SE PUEDO obtener la sistencia')
+    },
+    (error) => {
+      console.log(error)
+      console.log('No se puedo obtener la asistencia de '+this.usuario.id)
     })
     
   }
@@ -132,15 +154,16 @@ export class HomePage {
   //TODO| Genera Codigo QR - Profesor
   generarCodigoQR() {
 
-    this.qrData = JSON.stringify(this.user);
+    this.qrData = JSON.stringify(this.usuario);
   }
 
 
-//TODO| SALE DE LA APLICACION
+  //TODO| SALE DE LA APLICACION
   salir() {
     localStorage.removeItem('ingresado');
     localStorage.removeItem('user');
     this.router.navigate(['/login']);
+    location.reload()
   }
 
 }

@@ -21,11 +21,7 @@ export class OlvidePage {
   ngOnInit() {
     //Se carga el contenido de la api a la variable
 
-    this.api.get().subscribe(res => {
-      this.usuarios = res
-      console.log(this.usuarios)
-
-    })
+   
   }
 
   async recuperar() {
