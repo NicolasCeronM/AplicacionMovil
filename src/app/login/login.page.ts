@@ -3,7 +3,6 @@ import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../service/api.service';
 import { AlertController } from '@ionic/angular';
 import { HttpErrorResponse } from '@angular/common/http';
-import { error } from 'console';
 
 @Component({
   selector: 'app-login',

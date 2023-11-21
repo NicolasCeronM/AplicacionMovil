@@ -1,76 +1,64 @@
-// import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-// import { RouterTestingModule } from '@angular/router/testing';
-// import { IonicModule, NavController } from '@ionic/angular';
-// import { of } from 'rxjs';
-// import { LoginPage } from './login.page';
-// import { ApiService } from '../service/api.service';
-// import { AlertController } from '@ionic/angular';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { IonicModule } from '@ionic/angular';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute, NavigationExtras } from '@angular/router';
+import { of } from 'rxjs';
 
-// describe('LoginPage', () => {
-//   let component: LoginPage;
-//   let fixture: ComponentFixture<LoginPage>;
-//   let mockApiService: jasmine.SpyObj<ApiService>;
-//   let mockAlertController: jasmine.SpyObj<AlertController>;
-//   let mockNavController: jasmine.SpyObj<NavController>;
+import { LoginPage } from './login.page';
+import { ApiService } from '../service/api.service';
 
-//   beforeEach(
-//     waitForAsync(() => {
-//       mockApiService = jasmine.createSpyObj('ApiService', ['get']);
-//       mockAlertController = jasmine.createSpyObj('AlertController', ['create']);
-//       mockNavController = jasmine.createSpyObj('NavController', ['navigateForward']);
+describe('LoginPage', () => {
+    let component: LoginPage;
+    let fixture: ComponentFixture<LoginPage>;
+    let apiServiceSpy: jasmine.SpyObj<ApiService>;
 
-//       TestBed.configureTestingModule({
-//         declarations: [LoginPage],
-//         imports: [RouterTestingModule, IonicModule],
-//         providers: [
-//           { provide: ApiService, useValue: mockApiService },
-//           { provide: AlertController, useValue: mockAlertController },
-//           { provide: NavController, useValue: mockNavController },
-//         ],
-//       }).compileComponents();
+    beforeEach(waitForAsync(() => {
+        const spy = jasmine.createSpyObj('ApiService', ['verificarUsuario']);
 
-//       fixture = TestBed.createComponent(LoginPage);
-//       component = fixture.componentInstance;
-//     })
-//   );
+        TestBed.configureTestingModule({
+            declarations: [LoginPage],
+            imports: [
+                IonicModule.forRoot(),
+                HttpClientTestingModule,
+                RouterTestingModule,
+            ],
+            providers: [
+                { provide: ApiService, useValue: spy },
+            ],
+        }).compileComponents();
 
-//   it('should create', () => {
-//     expect(component).toBeTruthy();
-//   });
+        fixture = TestBed.createComponent(LoginPage);
+        component = fixture.componentInstance;
+        apiServiceSpy = TestBed.inject(ApiService) as jasmine.SpyObj<ApiService>;
+    }));
 
-//   it('should load users from ApiService on ngOnInit', () => {
-//     const mockUsuarios = [{ nombre_usuario: 'usuario1', contrasena: 'contrasena1' }];
-//     mockApiService.get.and.returnValue(of(mockUsuarios));
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 
-//     component.ngOnInit();
+    it('should navigate to home on successful login', waitForAsync(() => {
+        const mockUser = {
+            nombre_usuario: 'mockUser',
+            contrasena: 'mockPassword',
+        };
 
-//     expect(component.usuarios).toEqual(mockUsuarios);
-//     expect(mockApiService.get).toHaveBeenCalled();
-//   });
+        const mockResponse = { /* Simulate a successful response */ };
+        apiServiceSpy.verificarUsuario.and.returnValue(of(mockResponse));
 
-//   it('should navigate to home on successful login', async () => {
-//     const mockUsuario = { nombre_usuario: 'usuario1', contrasena: 'contrasena1' };
-//     component.usuarios = [mockUsuario];
-//     component.user = { username: 'usuario1', password: 'contrasena1' };
+        const navigationExtras: NavigationExtras = {
+            state: { user: mockUser },
+        };
 
-//     await component.IrAlHome();
+        spyOn(component['router'], 'navigate').and.callThrough();
 
-//     expect(localStorage.getItem('user')).toEqual(JSON.stringify(component.user));
-//     expect(localStorage.getItem('ingresado')).toEqual('true');
-//     expect(mockAlertController.create).not.toHaveBeenCalled();
-//     expect(mockNavController.navigateForward).toHaveBeenCalledWith('/home');
-//   });
+        component.user = mockUser;
+        component.IrAlHome();
 
-//   it('should show an alert on unsuccessful login', async () => {
-//     const mockUsuario = { nombre_usuario: 'usuario1', contrasena: 'contrasena1' };
-//     component.usuarios = [mockUsuario];
-//     component.user = { username: 'usuario2', password: 'contrasena2' };
+        fixture.whenStable().then(() => {
+            expect(apiServiceSpy.verificarUsuario).toHaveBeenCalledWith(mockUser);
+            expect(component['router'].navigate).toHaveBeenCalledWith(['/home'], navigationExtras);
+        });
+    }));
 
-//     await component.IrAlHome();
-
-//     expect(localStorage.getItem('user')).toBeNull();
-//     expect(localStorage.getItem('ingresado')).toBeNull();
-//     expect(mockAlertController.create).toHaveBeenCalled();
-//     expect(mockNavController.navigateForward).not.toHaveBeenCalled();
-//   });
-// });
+});
