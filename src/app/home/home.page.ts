@@ -17,7 +17,7 @@ export class HomePage {
 
   profesor_data: any;
 
-  usuario: any;
+  usuario: any ;
 
   nombre_usuario = {
     'nombre_usuario': ""
@@ -36,7 +36,7 @@ export class HomePage {
 
     this.activeroute.queryParams.subscribe(params => {
       this.state = this.router.getCurrentNavigation()?.extras.state;
-      this.nombre_usuario.nombre_usuario = this.state.user.nombre_usuario
+      this.nombre_usuario.nombre_usuario = this.state?.user?.nombre_usuario
     })
 
     //CARGA USUARIO

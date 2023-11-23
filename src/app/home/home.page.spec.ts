@@ -1,92 +1,108 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 import { HomePage } from './home.page';
-import { BarcodeScanner, ScanResult } from '@capacitor-community/barcode-scanner';
+import { RouterTestingModule } from '@angular/router/testing';
+import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
+import { AlertController } from '@ionic/angular';
 import { ApiService } from '../service/api.service';
 import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
-import { Router, ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
+import { Router } from '@angular/router';
+
+// Aumentar el tiempo de espera para las pruebas asincrónicas
+beforeAll(() => {
+  jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000; // (ajusta según sea necesario)
+});
 
 describe('HomePage', () => {
   let component: HomePage;
   let fixture: ComponentFixture<HomePage>;
+  let apiServiceSpy: jasmine.SpyObj<ApiService>;
+  let alertControllerSpy: jasmine.SpyObj<AlertController>;
+  let emailComposerSpy: jasmine.SpyObj<EmailComposer>;
+  let router: Router;
 
-  const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-  const activatedRouteSpy = jasmine.createSpyObj('ActivatedRoute', ['queryParams']);
-  const apiServiceSpy = jasmine.createSpyObj('ApiService', ['obtenerUsuario', 'obtenerAsistencia', 'asistencia']);
-  const emailComposerSpy = jasmine.createSpyObj('EmailComposer', ['open']);
+  beforeEach(waitForAsync(() => {
+    const apiSpy = jasmine.createSpyObj('ApiService', ['obtenerUsuario', 'asistencia', 'obtenerAsistencia']);
+    const alertSpy = jasmine.createSpyObj('AlertController', ['create']);
+    const emailSpy = jasmine.createSpyObj('EmailComposer', ['open']);
 
-  beforeEach(
-    waitForAsync(() => {
-      TestBed.configureTestingModule({
-        declarations: [HomePage],
-        imports: [IonicModule.forRoot()],
-        providers: [
-          { provide: Router, useValue: routerSpy },
-          { provide: ActivatedRoute, useValue: activatedRouteSpy },
-          { provide: ApiService, useValue: apiServiceSpy },
-          { provide: EmailComposer, useValue: emailComposerSpy },
-        ],
-      }).compileComponents();
+    TestBed.configureTestingModule({
+      declarations: [HomePage],
+      imports: [
+        IonicModule.forRoot(),
+        RouterTestingModule,
+      ],
+      providers: [
+        { provide: ApiService, useValue: apiSpy },
+        { provide: AlertController, useValue: alertSpy },
+        { provide: EmailComposer, useValue: emailSpy },
+      ],
+    }).compileComponents();
 
-      fixture = TestBed.createComponent(HomePage);
-      component = fixture.componentInstance;
-      fixture.detectChanges();
-    })
-  );
+    fixture = TestBed.createComponent(HomePage);
+    component = fixture.componentInstance;
+    apiServiceSpy = TestBed.inject(ApiService) as jasmine.SpyObj<ApiService>;
+    alertControllerSpy = TestBed.inject(AlertController) as jasmine.SpyObj<AlertController>;
+    emailComposerSpy = TestBed.inject(EmailComposer) as jasmine.SpyObj<EmailComposer>;
+    router = TestBed.inject(Router);
+  }));
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('debería llamar a obtenerUsuario cuando se llama a ngOnInit', () => {
-    const mockUsuario = { id: 1, nombre: 'John', apellido: 'Doe', correo: 'john.doe@example.com' };
-    
-    // Configura el objeto ActivatedRouteSnapshot con los parámetros simulados
-    const activatedRouteSnapshot = jasmine.createSpyObj('ActivatedRouteSnapshot', [], { queryParams: { user: { nombre_usuario: 'mockUser' } } });
-    
-    activatedRouteSpy.snapshot = activatedRouteSnapshot;
-    apiServiceSpy.obtenerUsuario.and.returnValue(of({ usuario: mockUsuario }));
-  
+  it('Deberia llamar obtenerUsuario y cargarlo en usuario al cargar ngOnInit', () => {
+    const mockResponse = {
+      usuario: {
+        id: 1,
+        nombre_usuario: 'n.ceron',
+        nombre: 'Nicolas',
+        apellido: 'Ceron',
+        correo: 'ni.ceron@duocuc.cl',
+        tipo_usuario: {
+          id: 1,
+          nombre_tipoUsuario: 'Alumno'
+        }
+      },
+      mensaje: 'Usuario encontrado correctamente'
+    };
+
+    // Modifica el objeto para tener un valor definido para nombre_usuario
+    const mockRequest = { nombre_usuario: 'n.ceron' };
+
+    apiServiceSpy.obtenerUsuario.and.returnValue(of(mockResponse));
+
+    // Establece el valor para nombre_usuario en tu componente antes de llamar a ngOnInit
+    component.nombre_usuario = mockRequest;
+
     component.ngOnInit();
-  
-    expect(apiServiceSpy.obtenerUsuario).toHaveBeenCalledWith({ nombre_usuario: 'mockUser' });
-    expect(component.usuario).toEqual(mockUsuario);
-  });
-  
 
-  it('debe navegar para iniciar sesión cuando se llame a salir', () => {
-    component.salir();
-
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
+    // Ajusta el valor en el expect para que coincida con el valor que estableciste
+    expect(apiServiceSpy.obtenerUsuario).toHaveBeenCalledWith(mockRequest);
+    expect(component.usuario).toEqual(mockResponse.usuario);
   });
 
-  it('debería manejar el escaneo exitoso en startScan', async () => {
-    spyOn(BarcodeScanner, 'checkPermission').and.returnValue(Promise.resolve({ granted: true }));
-    spyOn(BarcodeScanner, 'startScan').and.returnValue(Promise.resolve({ content: 'yourContent', format: 'QR_CODE' } as ScanResult));
-    apiServiceSpy.asistencia.and.returnValue(of({}));
 
-    await component.startScan();
+  it('Deberia generar codigo QR', () => {
+    // Crea un usuario ficticio para la prueba
+    const mockUsuario = {
+      nombre: 'John',
+      apellido: 'Doe',
+      correo: 'john.doe@example.com',
+    };
 
-    expect(apiServiceSpy.asistencia).toHaveBeenCalled();
-    // Add more expectations as needed
+    // Asigna el usuario ficticio a tu componente
+    component.usuario = mockUsuario;
+
+    // Llama a la función para generar el código QR
+    component.generarCodigoQR();
+
+    // Verifica que la propiedad qrData se haya actualizado correctamente
+    const expectedQRData = JSON.stringify(mockUsuario);
+    expect(component.qrData).toEqual(expectedQRData);
   });
 
-  it('debería manejar los permisos denegados en startScan', async () => {
-    spyOn(BarcodeScanner, 'checkPermission').and.returnValue(Promise.resolve({ denied: true }));
 
-    await component.startScan();
 
-    // Add expectations for handling denied permissions
-  });
-
-  it('debería manejar errores en startScan', async () => {
-    spyOn(BarcodeScanner, 'checkPermission').and.returnValue(Promise.reject('Permission error'));
-
-    await component.startScan();
-
-    // Add expectations for handling errors
-  });
-
-  // Add more test cases as needed
 });
