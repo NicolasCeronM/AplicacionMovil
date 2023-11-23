@@ -53,30 +53,28 @@ export class LoginPage implements OnInit {
   }
 
   async IrAlHome() {
-
-    this.api.verificarUsuario(this.user).subscribe((res) => {
-
+    try {
+      const response = await this.api.verificarUsuario(this.user).toPromise();
+  
       const navegationExtras: NavigationExtras = {
         state: {
           user: this.user,
         },
       };
+  
       localStorage.setItem('user', JSON.stringify(this.user));
       localStorage.setItem('ingresado', 'true');
-      this.router.navigate(['/home'], navegationExtras);
-
-    },
-      async (error) => {
-
-        console.log(error)
-
-        const alert = await this.alertController.create({
-          header: 'Error',
-          message: 'Usuario o contraseña Incorrecto',
-          buttons: ['OK'],
-        });
-        await alert.present();
-      })
-
+      await this.router.navigate(['/home'], navegationExtras);
+    } catch (error) {
+      console.log(error);
+  
+      const alert = await this.alertController.create({
+        header: 'Error',
+        message: 'Usuario o contraseña incorrecto',
+        buttons: ['OK'],
+      });
+  
+      await alert.present();
+    }
   }
 }
