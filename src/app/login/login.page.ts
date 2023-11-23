@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../service/api.service';
 import { AlertController } from '@ionic/angular';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -14,8 +15,17 @@ export class LoginPage implements OnInit {
   recuerdame = false;
 
   user = {
-    username: '',
-    password: '',
+    nombre_usuario: '',
+    contrasena: '',
+  };
+
+  nuevaAsistencia = {
+    // Puedes agregar aquí los datos necesarios para la nueva asistencia
+    // Por ejemplo:
+    profesorId: 1,
+    alumnoId: 2,
+    fecha: '2023-11-20',
+    // ... otros datos ...
   };
 
 
@@ -30,55 +40,43 @@ export class LoginPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    // Se guarda la API en la variable
-    this.api.get().subscribe((res) => {
-      this.usuarios = res;
-      // console.log(this.usuarios); // Muestra los datos de la API en la consola
-    });
-
 
     // Función para recibir lo que se manda de Olvide
     this.activeroute.queryParams.subscribe((params) => {
       this.state = this.router.getCurrentNavigation()?.extras.state;
       // console.log(this.state); Muestra lo que se manda de Olvide
       if (this.state) {
-        this.user.username = this.state.username;
-        this.user.password = this.state.password;
+        this.user.nombre_usuario = this.state.username;
+        this.user.contrasena = this.state.password;
       }
     });
-
-
-
-
   }
 
   async IrAlHome() {
-    // Validamos el inicio de sesión con datos de la API
-    let usuarioEncontrado = false;
 
-    for (const item of this.usuarios) {
-      if (this.user.username === item.nombre_usuario && this.user.password === item.contrasena) {
-        usuarioEncontrado = true;
+    this.api.verificarUsuario(this.user).subscribe((res) => {
 
+      const navegationExtras: NavigationExtras = {
+        state: {
+          user: this.user,
+        },
+      };
+      localStorage.setItem('user', JSON.stringify(this.user));
+      localStorage.setItem('ingresado', 'true');
+      this.router.navigate(['/home'], navegationExtras);
 
-        const navegationExtras: NavigationExtras = {
-          state: {
-            user: item,
-          },
-        };
-        localStorage.setItem('user', JSON.stringify(this.user));
-        localStorage.setItem('ingresado', 'true');
-        this.router.navigate(['/home'], navegationExtras);
-      }
-    }
+    },
+      async (error) => {
 
-    if (!usuarioEncontrado) {
-      const alert = await this.alertController.create({
-        header: 'Error',
-        message: 'Usuario o contraseña Incorrecto',
-        buttons: ['OK'],
-      });
-      await alert.present();
-    }
+        console.log(error)
+
+        const alert = await this.alertController.create({
+          header: 'Error',
+          message: 'Usuario o contraseña Incorrecto',
+          buttons: ['OK'],
+        });
+        await alert.present();
+      })
+
   }
 }

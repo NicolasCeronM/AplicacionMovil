@@ -13,50 +13,41 @@ export class OlvidePage {
 
   username = "";
 
-  usuarios: any;
+  usuario: any;
 
 
   constructor(private router: Router, private api: ApiService, private alertController: AlertController) { }
 
   ngOnInit() {
-    //Se carga el contenido de la api a la variable
-
-    this.api.get().subscribe(res => {
-      this.usuarios = res
-      console.log(this.usuarios)
-
-    })
+   
   }
 
   async recuperar() {
-    
-    // Validamos el inicio de sesión con datos de la API
-    let usuarioEncontrado = false;
 
-    for (const item of this.usuarios) {
+    //CARGA USUARIO
+    this.api.obtenerUsuario({"nombre_usuario":this.username}).subscribe((res) => {
 
-      if (this.username === item.nombre_usuario) {
-        usuarioEncontrado = true;
+      this.usuario = res.usuario
+      console.log(this.usuario)
 
-        let navegationExtras: NavigationExtras = {
-          state: {
-            username : this.username,
-            password : item.contrasena
-          }
+      let navegationExtras: NavigationExtras = {
+        state: {
+          username : this.usuario.nombre_usuario,
         }
-        this.router.navigate(['/login'], navegationExtras)
       }
-    }
-
-    if (!usuarioEncontrado) {
+      this.router.navigate(['/login'], navegationExtras)
+    },
+    async (error)=> {
       const alert = await this.alertController.create({
         header: 'Error',
         message: 'Usuario no encontrado',
         buttons: ['OK'],
       });
       await alert.present();
-    }
+    })
+    
 
   }
+
 
 }

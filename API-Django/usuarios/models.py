@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 # Create your models here.
 
@@ -18,3 +19,14 @@ class Usuario(models.Model):
     
     def __str__(self):
         return self.nombre_usuario
+
+class Asistencia(models.Model):
+
+    alumno = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='asistencia_alumno')
+    profesor = models.ForeignKey(Usuario,on_delete=models.CASCADE, related_name='asistencia_profesor')
+    fecha = models.DateField(auto_now_add=True)
+    hora = models.DateTimeField(default=timezone.now)
+
+
+    def __str__(self):
+       return f"Fecha: {self.hora}, Profesor: {self.profesor}"

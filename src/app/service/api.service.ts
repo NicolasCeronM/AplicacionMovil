@@ -8,12 +8,26 @@ import { Observable, retry } from 'rxjs';
 
 export class ApiService {
 
-  apiUrl = 'https://apimocha.com/usuariosduoc/usuarios ';
+  URL = 'https://jbbrf9d9-8000.brs.devtunnels.ms/api/'
 
   constructor(private http: HttpClient) { }
 
 
-  get():Observable<any>{
-    return this.http.get(this.apiUrl).pipe(retry(3))
+  verificarUsuario(body: any):Observable<any>{
+    return this.http.post(this.URL+'verificar-usuario/',body).pipe(retry(3))
   }
+
+  obtenerUsuario(body:any):Observable<any>{
+    return this.http.post(this.URL+'obtener-usuario/',body).pipe(retry(3))
+  }
+
+  obtenerAsistencia(body:any):Observable<any>{
+    return this.http.post(this.URL+'obtener-asistencias/',body).pipe(retry(3))
+  }
+
+  //Se puede con metodo POST y GET
+  asistencia(body:any):Observable<any>{
+    return this.http.post(this.URL+'asistencia/',body).pipe(retry(3))
+  }
+
 }

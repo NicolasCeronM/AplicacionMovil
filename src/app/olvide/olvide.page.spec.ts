@@ -1,50 +1,77 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule, NavController } from '@ionic/angular';
+import { IonicModule } from '@ionic/angular';
+import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
+
 import { OlvidePage } from './olvide.page';
 import { ApiService } from '../service/api.service';
-import { AlertController } from '@ionic/angular';
 
 describe('OlvidePage', () => {
   let component: OlvidePage;
   let fixture: ComponentFixture<OlvidePage>;
-  let mockApiService: jasmine.SpyObj<ApiService>;
-  let mockAlertController: jasmine.SpyObj<AlertController>;
-  let mockNavController: jasmine.SpyObj<NavController>;
+  let apiServiceSpy: jasmine.SpyObj<ApiService>;
 
-  beforeEach(
-    waitForAsync(() => {
-      mockApiService = jasmine.createSpyObj('ApiService', ['get']);
-      mockAlertController = jasmine.createSpyObj('AlertController', ['create']);
-      mockNavController = jasmine.createSpyObj('NavController', ['navigate']);
+  beforeEach(waitForAsync(() => {
+    const spy = jasmine.createSpyObj('ApiService', ['obtenerUsuario']);
 
-      TestBed.configureTestingModule({
-        declarations: [OlvidePage],
-        imports: [IonicModule],
-        providers: [
-          { provide: ApiService, useValue: mockApiService },
-          { provide: AlertController, useValue: mockAlertController },
-          { provide: NavController, useValue: mockNavController },
-        ],
-      }).compileComponents();
+    TestBed.configureTestingModule({
+      declarations: [OlvidePage],
+      imports: [
+        IonicModule.forRoot(),
+        RouterTestingModule,
+      ],
+      providers: [
+        { provide: ApiService, useValue: spy },
+      ],
+    }).compileComponents();
 
-      fixture = TestBed.createComponent(OlvidePage);
-      component = fixture.componentInstance;
-    })
-  );
+    fixture = TestBed.createComponent(OlvidePage);
+    component = fixture.componentInstance;
+    apiServiceSpy = TestBed.inject(ApiService) as jasmine.SpyObj<ApiService>;
+  }));
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call api.get() on ngOnInit', () => {
-    const mockUsuarios = [{ nombre_usuario: 'usuario1', contrasena: 'contrasena1' }];
-    mockApiService.get.and.returnValue(of(mockUsuarios));
+  it('debe navegar para iniciar sesión en una recuperación exitosa', waitForAsync(() => {
+    const mockUsername = 'mockUser';
+    const mockResponse = { usuario: { nombre_usuario: mockUsername } };
 
-    component.ngOnInit();
+    apiServiceSpy.obtenerUsuario.and.returnValue(of(mockResponse));
 
-    expect(component.usuarios).toEqual(mockUsuarios);
-    expect(mockApiService.get).toHaveBeenCalled();
-  });
+    const navigateSpy = spyOn(component['router'], 'navigate').and.callThrough();
 
+    component.username = mockUsername;
+    component.recuperar();
+
+    fixture.whenStable().then(() => {
+      expect(navigateSpy).toHaveBeenCalledWith(['/login'], {
+        state: { username: mockUsername },
+      });
+    });
+  }));
+
+  // it('should show an error alert on failed recovery', waitForAsync(() => {
+  //   const mockUsername = 'mockUser';
+  //   const mockError = new Error('User not found');
+
+  //   apiServiceSpy.obtenerUsuario.and.callFake(() => {
+  //     return new Error(mockError);
+  //   });
+
+  //   const alertControllerSpy = spyOn(component['alertController'], 'create').and.callThrough();
+
+  //   component.username = mockUsername;
+  //   component.recuperar();
+
+  //   fixture.whenStable().then(() => {
+  //     expect(apiServiceSpy.obtenerUsuario).toHaveBeenCalledWith({ nombre_usuario: mockUsername });
+  //     expect(alertControllerSpy).toHaveBeenCalledWith({
+  //       header: 'Error',
+  //       message: 'Usuario no encontrado',
+  //       buttons: ['OK'],
+  //     });
+  //   });
+  // }));
 });
