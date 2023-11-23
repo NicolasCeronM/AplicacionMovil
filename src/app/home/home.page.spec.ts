@@ -2,16 +2,19 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 import { HomePage } from './home.page';
 import { RouterTestingModule } from '@angular/router/testing';
-import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
+import { BarcodeScanner, BarcodeScannerPlugin, ScanResult, } from '@capacitor-community/barcode-scanner';
 import { AlertController } from '@ionic/angular';
 import { ApiService } from '../service/api.service';
 import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
+import SpyObj = jasmine.SpyObj; 
+
+
 
 // Aumentar el tiempo de espera para las pruebas asincrónicas
 beforeAll(() => {
-  jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000; // (ajusta según sea necesario)
+  jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000; // (ajusta según sea necesario)
 });
 
 describe('HomePage', () => {
@@ -21,11 +24,14 @@ describe('HomePage', () => {
   let alertControllerSpy: jasmine.SpyObj<AlertController>;
   let emailComposerSpy: jasmine.SpyObj<EmailComposer>;
   let router: Router;
+  let barcodeScannerSpy: SpyObj<BarcodeScannerPlugin>;
+
 
   beforeEach(waitForAsync(() => {
     const apiSpy = jasmine.createSpyObj('ApiService', ['obtenerUsuario', 'asistencia', 'obtenerAsistencia']);
     const alertSpy = jasmine.createSpyObj('AlertController', ['create']);
     const emailSpy = jasmine.createSpyObj('EmailComposer', ['open']);
+    const barcodeScanner = jasmine.createSpyObj('BarcodeScanner', ['checkPermission', 'openAppSettings']);
 
     TestBed.configureTestingModule({
       declarations: [HomePage],
@@ -46,6 +52,10 @@ describe('HomePage', () => {
     alertControllerSpy = TestBed.inject(AlertController) as jasmine.SpyObj<AlertController>;
     emailComposerSpy = TestBed.inject(EmailComposer) as jasmine.SpyObj<EmailComposer>;
     router = TestBed.inject(Router);
+    barcodeScannerSpy = jasmine.createSpyObj('BarcodeScannerPlugin', ['prepare', 'startScan', 'hideBackground', 'showBackground', 'checkPermission', 'openAppSettings', 'getTorchState']);
+
+
+    
   }));
 
   it('should create', () => {
@@ -103,6 +113,43 @@ describe('HomePage', () => {
     expect(component.qrData).toEqual(expectedQRData);
   });
 
+  it('Debe cargar asistencia para el usuario', async () => {
+    const mockUsuario = { id: 1 }; // Define un objeto de usuario con un ID
+    component.usuario = mockUsuario; // Asigna el usuario al componente
 
+    const mockAsistencia = [{ id: 1, fecha: '2023-01-01', hora: '08:00:00' }, { id: 2, fecha: '2023-01-02', hora: '10:30:00' }];
+
+    // Configura el servicio para devolver la asistencia simulada
+    apiServiceSpy.obtenerAsistencia.and.returnValue(of(mockAsistencia));
+
+    // Llama a la función que se está probando
+    await component.cargarAsistencia();
+
+    // Verifica que la asistencia en el componente se haya actualizado correctamente
+    expect(component.asistencia).toEqual(mockAsistencia);
+
+    // Verifica que el servicio se haya llamado con el ID correcto del usuario
+    expect(apiServiceSpy.obtenerAsistencia).toHaveBeenCalledWith({ id: component.usuario.id });
+  });
+
+  it('debería manejar el error al cargar la asistencia', async () => {
+    // Configura el servicio para devolver un error
+    apiServiceSpy.obtenerAsistencia.and.returnValue(throwError('Error al cargar asistencia'));
+
+    // Espía console.log antes de que se llame a la función
+    spyOn(console, 'log');
+
+    // Antes de llamar a cargarAsistencia, inicializa component.usuario con un valor de ejemplo
+    component.usuario = { id: 1, nombre_usuario: 'ejemplo', nombre: 'Ejemplo', apellido: 'Usuario', correo: 'ejemplo@correo.com', tipo_usuario: { id: 1, nombre_tipoUsuario: 'Alumno' } };
+
+    // Llama a la función que se está probando
+    await component.cargarAsistencia();
+
+    // Verifica que la asistencia en el componente siga siendo indefinida (o cualquier valor predeterminado que tenga)
+    expect(component.asistencia).toBeUndefined();
+
+    // Verifica que se haya registrado un mensaje de error en la consola
+    expect(console.log).toHaveBeenCalledWith('Error al cargar asistencia');
+  });
 
 });
