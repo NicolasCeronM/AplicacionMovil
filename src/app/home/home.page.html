@@ -86,7 +86,8 @@
                 <ion-list *ngFor="let i of asistencia?.asistencias">
 
                   <ion-item>
-                    <ion-label>{{i.fecha}} | Profesor: {{i.profesor.nombre}} {{i.profesor.apellido}} | hora: {{i.hora}}</ion-label>
+                    <ion-label>Fecha: {{i.fecha}}</ion-label> 
+                    <ion-label>Hora: {{i.hora_formateada}}</ion-label>
                   </ion-item>
 
                 </ion-list>

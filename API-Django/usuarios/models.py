@@ -27,6 +27,11 @@ class Asistencia(models.Model):
     fecha = models.DateField(auto_now_add=True)
     hora = models.DateTimeField(default=timezone.now)
 
+    def obtener_hora_formateada(self):
+        # Obtener solo la hora
+        hora_formateada = self.hora.strftime('%H:%M:%S')
+        return hora_formateada
+
 
     def __str__(self):
-       return f"Fecha: {self.hora}, Profesor: {self.profesor}"
+       return f"Hora: {self.obtener_hora_formateada()}, Fecha: {self.fecha}"

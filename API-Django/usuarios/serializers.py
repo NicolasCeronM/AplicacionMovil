@@ -19,7 +19,15 @@ class ProfesorSerializers(serializers.ModelSerializer):
         fields = ['id','nombre','apellido']
 
 class AsistenciaSerializers(serializers.ModelSerializer):
-    #profesor = ProfesorSerializers(read_only=True)
     class Meta:
-        model=Asistencia
+        model = Asistencia
         fields = '__all__'
+
+    def to_representation(self, instance):
+        # Llama a la implementación predeterminada de to_representation
+        data = super().to_representation(instance)
+
+        # Agrega el campo 'hora_formateada' con la hora formateada
+        data['hora_formateada'] = instance.obtener_hora_formateada()
+
+        return data
