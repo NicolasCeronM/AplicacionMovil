@@ -1,8 +1,8 @@
-from .models import Usuario, Asistencia
+from .models import Usuario, Asistencia, Asignatura
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import UsuarioSerializers, AsistenciaSerializers
+from .serializers import UsuarioSerializers, AsistenciaSerializers, AsignaturaSerializers
 from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser
 
@@ -88,3 +88,65 @@ class AsistenciaVieset(viewsets.ModelViewSet):
     queryset = Asistencia.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = AsistenciaSerializers
+
+class ObtenerAsignatura(APIView):
+    def post(self, request, *args, **kwargs):
+        data = JSONParser().parse(request)
+
+        usuario_id = data['id']
+        try:
+            usuario = Usuario.objects.get(id=usuario_id)
+
+            if usuario.tipo_usuario.id!=2:
+                return Response({'mensaje': 'El usuario no es profesor'}, status=status.HTTP_400_BAD_REQUEST)
+                
+            else:
+                asignaturas = Asignatura.objects.filter(profesor_id=usuario_id)
+
+
+                asignatura_serializer = AsignaturaSerializers(asignaturas, many=True).data
+
+                response_data = {
+                    'asignaturas': asignatura_serializer,
+                    'profesor':{
+                        'id':usuario.id,
+                        'nombre':usuario.nombre,
+                        'apellido':usuario.apellido,
+                        'correo':usuario.correo
+
+                    },
+                    'mensaje': 'Asignaturas encontradas correctamente',
+                }
+
+                return Response(response_data, status=status.HTTP_200_OK)
+                
+        except Usuario.DoesNotExist:
+            return Response({'mensaje': 'Usuario no encontrado'}, status=status.HTTP_400_BAD_REQUEST)
+
+class ObAsignatura(APIView):
+    def post(self, request, *args, **kwargs):
+        data = JSONParser().parse(request)
+
+        id_data = data.get('id')
+        try:
+            asignatura = Asignatura.objects.get(id=id_data)
+            profesor = asignatura.profesor  # Obtén directamente el objeto Usuario asociado
+
+            asignatura_serializer = AsignaturaSerializers(asignatura)
+            profesor_serializer = UsuarioSerializers(profesor)
+            
+            response_data = {
+                'asignatura': asignatura_serializer.data,
+                'profesor': {
+                    'nombre':profesor.nombre,
+                    'apellido':profesor.apellido,
+                    'correo':profesor.correo
+                },
+                'mensaje': 'Asignatura encontrada correctamente',
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
+                
+        except Asignatura.DoesNotExist:
+            return Response({'mensaje': 'Asignatura no encontrada'}, status=status.HTTP_404_NOT_FOUND)
+

@@ -1,3 +1,4 @@
+------------------------------------------------ SCRIP USUARIOS ------------------------------------------------
 /*Tipo Persona*/
 INSERT INTO prueba.usuarios_tipousuario VALUES (1, 'Alumno');
 INSERT INTO prueba.usuarios_tipousuario VALUES (2, 'Profesor');
@@ -17,4 +18,17 @@ INSERT INTO prueba.usuarios_usuario VALUES (9, 'Miguel', 'López', 'm.lopez', 'm
 INSERT INTO prueba.usuarios_usuario VALUES (10, 'Elena', 'Rodríguez', 'e.rodr', 'elena.r@duocuc.cl', 29438, 2);
 
 select * from prueba.usuarios_usuario;
+
+------------------------------------------------ SCRIP ASIGNATURAS ------------------------------------------------
+
+INSERT INTO prueba.usuarios_asignatura VALUES(1,'Programacion de aplicaciones moviles', '006-D',6);
+INSERT INTO prueba.usuarios_asignatura VALUES(2,'Arquitectura', '006-D',7);
+INSERT INTO prueba.usuarios_asignatura VALUES(3,'Calidad de software', '009-D',7);
+INSERT INTO prueba.usuarios_asignatura VALUES(4,'Estadistica descriptiva', '009-D',8);
+INSERT INTO prueba.usuarios_asignatura VALUES(5,'Etica para el trabajo', '007-D',10);
+INSERT INTO prueba.usuarios_asignatura VALUES(6,'Ingles intermedio', '019-D',9);
+INSERT INTO prueba.usuarios_asignatura VALUES(7,'Proceso de protafolio', '022-D',9);
+
+select * from prueba.usuarios_asignatura;
+
 

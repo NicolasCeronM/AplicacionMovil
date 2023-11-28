@@ -30,4 +30,12 @@ export class ApiService {
     return this.http.post(this.URL+'asistencia/',body).pipe(retry(3))
   }
 
+  pruebasQr(body:any):Observable<any>{
+    return this.http.post(this.URL+'obtener-asignatura/',body).pipe(retry(3))
+  }
+
+  dataQr(body:any):Observable<any>{
+    return this.http.post(this.URL+'asignatura/',body).pipe(retry(3))
+  }
+
 }

@@ -19,13 +19,23 @@ class Usuario(models.Model):
     
     def __str__(self):
         return self.nombre_usuario
+    
+class Asignatura(models.Model):
+    profesor = models.ForeignKey(Usuario,on_delete=models.CASCADE)
+    nomreAsignatura = models.CharField(max_length=50)
+    seccion = models.CharField(max_length=5)
+
+    def __str__(self):
+        return f"La asignatura {self.nomreAsignatura} de la seccion {self.seccion} es impartida por {self.profersor}"
+
 
 class Asistencia(models.Model):
-
     alumno = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='asistencia_alumno')
     profesor = models.ForeignKey(Usuario,on_delete=models.CASCADE, related_name='asistencia_profesor')
     fecha = models.DateField(auto_now_add=True)
     hora = models.DateTimeField(default=timezone.now)
+    asignatura = models.CharField(max_length=50, default='nn')
+    seccion = models.CharField(max_length=5, default='nn')
 
     def obtener_hora_formateada(self):
         # Obtener solo la hora

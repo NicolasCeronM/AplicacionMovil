@@ -4,6 +4,7 @@ import { BarcodeScanner } from '@capacitor-community/barcode-scanner'; //Escanea
 import { ApiService } from '../service/api.service';
 import { AlertController } from '@ionic/angular';
 import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
+import { error } from 'console';
 
 @Component({
   selector: 'app-home',
@@ -27,9 +28,20 @@ export class HomePage {
 
   qrData: any;
 
+  data:any;
+
+  asignaturas:any;
+
   constructor(private activeroute: ActivatedRoute, private router: Router, private api: ApiService, private alertController: AlertController, private emailComposer: EmailComposer,) {
     this.fecha = new Date();
 
+  }
+
+  cargarUsuario(){
+    this.api.obtenerUsuario(this.nombre_usuario).subscribe((res) => {
+      this.usuario = res.usuario
+      console.log(this.usuario)
+    })
   }
 
   ngOnInit() {
@@ -39,11 +51,8 @@ export class HomePage {
       this.nombre_usuario.nombre_usuario = this.state?.user?.nombre_usuario
     })
 
-    //CARGA USUARIO
-    this.api.obtenerUsuario(this.nombre_usuario).subscribe((res) => {
-      this.usuario = res.usuario
-      console.log(this.usuario)
-    })
+    this.cargarUsuario();
+    
 
   }
 
@@ -101,14 +110,14 @@ export class HomePage {
       const result = await BarcodeScanner.startScan();
 
       if (result.hasContent) {
-        this.profesor_data = JSON.parse(result.content);
-        console.log(this.profesor_data);
+        this.data = JSON.parse(result.content);
+        console.log(this.data.profesor)
         BarcodeScanner.showBackground();
         document.getElementById('main-content')?.classList.remove('scanner-active');
         document.getElementById('main-content')?.classList.remove('ocultar');
 
         // Se guarda en la base de datos
-        this.api.asistencia({ "alumno": this.usuario.id, "profesor": this.profesor_data.id }).subscribe(
+        this.api.asistencia({ "alumno": this.usuario.id, "profesor": this.data.asignatura.profesor, "asignatura":this.data.asignatura.nomreAsignatura, "seccion":this.data.asignatura.seccion}).subscribe(
           (res) => {
             console.log('ASISTENCIA REGISTRADA');
           },
@@ -119,12 +128,16 @@ export class HomePage {
 
         // Enviar correo al profesor
         let email = {
-          app: 'gmail',
-          to: this.profesor_data.correo,
+          to: this.data.profesor.correo,
           subject: 'Confirmación de Asistencia a Clase',
-          body: `<p>Estimado profesor ${this.profesor_data.nombre}</p>
+          body: `<p>Estimado profesor ${this.data.profesor.nombre} ${this.data.profesor.apellido}</p>
 
-          <p>Espero que este mensaje le encuentre bien. La razón de la presente es confirmar mi participación en la clase de hoy, ${this.fecha}.</p>
+          <p>Espero que este mensaje le encuentre bien. La razón de la presente es confirmar mi participación en la clase de hoy.</p>
+          <ul>
+            <li>Asignatura: ${this.data.asignatura.nomreAsignatura}</li>
+            <li>Seccion: ${this.data.asignatura.seccion}</li>
+            <li>Fecha: ${this.fecha}</li>
+          </ul>
 
           <p>Saludos cordiales</p>
 
@@ -135,6 +148,7 @@ export class HomePage {
 
         // Abre el correo
         this.emailComposer.open(email);
+
       } else {
         const alert = await this.alertController.create({
           header: 'Error',
@@ -153,7 +167,7 @@ export class HomePage {
     //Carga asistencia de Alumno
 
     this.api.obtenerAsistencia({ "id": this.usuario.id }).subscribe((res) => {
-      console.log(res)
+      // console.log(res)
       this.asistencia = res
       console.log('SI SE PUEDO obtener la sistencia')
     },
@@ -164,10 +178,27 @@ export class HomePage {
 
   }
 
-  //TODO| Genera Codigo QR - Profesor
-  generarCodigoQR() {
+  prueba(){
 
-    this.qrData = JSON.stringify(this.usuario);
+    this.api.pruebasQr({"id":this.usuario.id}).subscribe((res) => {
+      // console.log(res.asignaturas)
+      this.asignaturas=res.asignaturas
+
+    },
+    (error) => {
+      console.log(error)
+    }
+    )
+
+  }
+
+  //TODO| Genera Codigo QR - Profesor
+  generarCodigoQR(id:any) {
+
+    this.api.dataQr({"id":id}).subscribe((res) => {
+      console.log(res)
+      this.qrData = JSON.stringify(res)
+    })
   }
 
 

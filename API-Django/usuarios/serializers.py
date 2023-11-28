@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Usuario, TipoUsuario, Asistencia
+from .models import Usuario, TipoUsuario, Asistencia, Asignatura
 from django.contrib.auth import authenticate
 
 class TipoUsuarioSerializer(serializers.ModelSerializer):
@@ -31,3 +31,8 @@ class AsistenciaSerializers(serializers.ModelSerializer):
         data['hora_formateada'] = instance.obtener_hora_formateada()
 
         return data
+
+class AsignaturaSerializers(serializers.ModelSerializer):
+    class Meta:
+        model=Asignatura
+        fields = '__all__'
