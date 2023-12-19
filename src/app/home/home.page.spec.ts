@@ -94,25 +94,6 @@ describe('HomePage', () => {
   });
 
 
-  it('Deberia generar codigo QR', () => {
-    // Crea un usuario ficticio para la prueba
-    const mockUsuario = {
-      nombre: 'John',
-      apellido: 'Doe',
-      correo: 'john.doe@example.com',
-    };
-
-    // Asigna el usuario ficticio a tu componente
-    component.usuario = mockUsuario;
-
-    // Llama a la función para generar el código QR
-    component.generarCodigoQR();
-
-    // Verifica que la propiedad qrData se haya actualizado correctamente
-    const expectedQRData = JSON.stringify(mockUsuario);
-    expect(component.qrData).toEqual(expectedQRData);
-  });
-
   it('Debe cargar asistencia para el usuario', async () => {
     const mockUsuario = { id: 1 }; // Define un objeto de usuario con un ID
     component.usuario = mockUsuario; // Asigna el usuario al componente

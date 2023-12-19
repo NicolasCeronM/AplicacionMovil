@@ -4,7 +4,6 @@ import { BarcodeScanner } from '@capacitor-community/barcode-scanner'; //Escanea
 import { ApiService } from '../service/api.service';
 import { AlertController } from '@ionic/angular';
 import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
-import { error } from 'console';
 
 @Component({
   selector: 'app-home',
